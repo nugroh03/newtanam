@@ -45,6 +45,7 @@ class _OrderPageState extends State<OrderPage> {
         children: [
           Container(
             padding: EdgeInsets.all(5),
+            height: MediaQuery.of(context).size.height * 0.27,
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
               color: white,
@@ -143,8 +144,8 @@ class _OrderPageState extends State<OrderPage> {
       body: Padding(
         padding: const EdgeInsets.only(top: 10, bottom: 40, left: 5, right: 5),
         child: GridView.count(
-          childAspectRatio: 2 / 3,
-          crossAxisCount: 3,
+          childAspectRatio: 4 / 5,
+          crossAxisCount: 2,
           crossAxisSpacing: 5,
           children: _product.map<Widget>((item) => gridkategori(item)).toList(),
         ),
