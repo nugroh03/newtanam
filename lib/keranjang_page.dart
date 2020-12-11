@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tanamio/color.dart';
+import 'package:tanamio/edit_produk_orderan.dart';
 
 class KeranjangPage extends StatefulWidget {
   KeranjangPage({Key key, this.title}) : super(key: key);
@@ -17,7 +18,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
   bool _keranjangkosong = true;
 
   List dataorderan = [
-    /*{
+    {
       'nameproduct': 'Butternut',
       'hargasatuan': '5.000',
       'qty': '100',
@@ -40,7 +41,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
       'hargasatuan': '10.000',
       'qty': '5',
       'hargatotal': '50.000'
-    },*/
+    },
   ];
 
   void _incrementCounter() {
@@ -188,7 +189,10 @@ class _KeranjangPageState extends State<KeranjangPage> {
                             Text('Qty' + '  ' + item['qty'] + '  ' + 'Kg',
                                 style: GoogleFonts.poppins(fontSize: 15)),
                             InkWell(
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.push(
+                                context, MaterialPageRoute(builder: (context) => EditProductOrderan()));
+                              },
                               child: Text('Edit Order',
                                   style: GoogleFonts.poppins(
                                       color: blue, fontSize: 15)),

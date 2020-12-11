@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tanamio/color.dart';
 import 'package:tanamio/keranjang_page.dart';
@@ -37,6 +38,11 @@ class _HomePageState extends State<HomePage> {
                 style: GoogleFonts.poppins(
                     fontSize: 30, fontWeight: FontWeight.bold)),
           ),
+          actions: [
+            IconButton(icon:FaIcon(FontAwesomeIcons.search), onPressed: (){}),
+            IconButton(icon:Icon(Icons.menu), onPressed: (){}),
+
+          ],
           flexibleSpace: Container(
             decoration: BoxDecoration(
                 gradient: LinearGradient(
