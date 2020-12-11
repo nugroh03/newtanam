@@ -123,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
     final forgotLabel = FlatButton(
       child: Text(
         'Forgot password?',
-        style: TextStyle(color: Colors.black54),
+        style: GoogleFonts.poppins(color: blue, fontSize: 15),
       ),
       onPressed: () {},
     );
@@ -142,9 +142,8 @@ class _LoginPageState extends State<LoginPage> {
               email,
               SizedBox(height: 8.0),
               password,
-              SizedBox(height: 24.0),
+              forgotLabel,
               loginButton,
-              forgotLabel
             ],
           ),
         ),

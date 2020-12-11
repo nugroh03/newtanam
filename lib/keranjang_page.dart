@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tanamio/color.dart';
 
@@ -13,20 +14,46 @@ class KeranjangPage extends StatefulWidget {
 }
 
 class _KeranjangPageState extends State<KeranjangPage> {
-  int _counter = 0;
+  bool _keranjangkosong = true;
+
+  List dataorderan = [
+    /*{
+      'nameproduct': 'Butternut',
+      'hargasatuan': '5.000',
+      'qty': '100',
+      'hargatotal': '500.000'
+    },
+    {
+      'nameproduct': 'Melon',
+      'hargasatuan': '4.000',
+      'qty': '50',
+      'hargatotal': '200.000'
+    },
+    {
+      'nameproduct': 'Cabai',
+      'hargasatuan': '20.000',
+      'qty': '5',
+      'hargatotal': '100.000'
+    },
+    {
+      'nameproduct': 'Kentang',
+      'hargasatuan': '10.000',
+      'qty': '5',
+      'hargatotal': '50.000'
+    },*/
+  ];
 
   void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+    setState(() {});
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: primary,
-      body: Padding(
-        padding: const EdgeInsets.only(bottom: 40),
+  Widget keranjangkosong() {
+    return Visibility(
+      visible: _keranjangkosong,
+      child: Padding(
+        padding: const EdgeInsets.only(
+          top: 120,
+        ),
         child: Center(
           child: Container(
             alignment: Alignment.center,
@@ -79,6 +106,123 @@ class _KeranjangPageState extends State<KeranjangPage> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget orderan(item) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+      child: Container(
+        padding: EdgeInsets.all(10),
+        height: 120,
+        decoration: BoxDecoration(
+          color: white,
+          borderRadius: BorderRadius.all(Radius.circular(5)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 2,
+              blurRadius: 3,
+              offset: Offset(0, 3), // changes position of shadow
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Flexible(
+                flex: 1,
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: Image.asset('assets/product/butternut.png'),
+                )),
+            Flexible(
+                flex: 3,
+                child: Container(
+                  color: white,
+                  child: Column(
+                    children: [
+                      Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(item['nameproduct'],
+                                      style: GoogleFonts.poppins(fontSize: 17)),
+                                  Text('Rp.' + '' + item['hargasatuan'] + '/Kg',
+                                      style: GoogleFonts.poppins(
+                                          color: grey, fontSize: 14)),
+                                ],
+                              ),
+                            ),
+                            IconButton(
+                                iconSize: 25,
+                                color: grey,
+                                alignment: Alignment.topCenter,
+                                icon: FaIcon(
+                                  FontAwesomeIcons.trashAlt,
+                                ),
+                                onPressed: () {})
+                          ],
+                        ),
+                      ),
+                      Container(
+                        alignment: Alignment.centerRight,
+                        width: MediaQuery.of(context).size.width,
+                        child: Text('Rp.' + '  ' + item['hargatotal'],
+                            style: GoogleFonts.poppins(
+                                color: red,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 17)),
+                      ),
+                      Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Qty' + '  ' + item['qty'] + '  ' + 'Kg',
+                                style: GoogleFonts.poppins(fontSize: 15)),
+                            InkWell(
+                              onTap: () {},
+                              child: Text('Edit Order',
+                                  style: GoogleFonts.poppins(
+                                      color: blue, fontSize: 15)),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ))
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget listproduct() {
+    return ListView(
+        padding: EdgeInsets.only(bottom: 60),
+        children: dataorderan.length > 0
+            ? dataorderan
+                .map<Widget>(
+                  (item) => orderan(item),
+                )
+                .toList()
+            : [keranjangkosong()]);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: primary,
+      body: Stack(
+        children: [listproduct()],
       ),
       bottomSheet: BottomAppBar(
         child: Row(

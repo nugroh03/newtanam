@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tanamio/home_page.dart';
 import 'package:tanamio/login_page.dart';
 
 void main() {
