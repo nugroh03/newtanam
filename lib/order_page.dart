@@ -47,6 +47,7 @@ class _OrderPageState extends State<OrderPage> {
             padding: EdgeInsets.all(5),
             height: MediaQuery.of(context).size.height * 0.27,
             width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height*0.27,
             decoration: BoxDecoration(
               color: white,
               borderRadius: BorderRadius.all(Radius.circular(10)),
