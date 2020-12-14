@@ -191,7 +191,10 @@ class _KeranjangPageState extends State<KeranjangPage> {
                             InkWell(
                               onTap: () {
                                 Navigator.push(
-                                context, MaterialPageRoute(builder: (context) => EditProductOrderan()));
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            EditProductOrderan()));
                               },
                               child: Text('Edit Order',
                                   style: GoogleFonts.poppins(
@@ -248,7 +251,9 @@ class _KeranjangPageState extends State<KeranjangPage> {
               flex: 1,
               child: FlatButton(
                   padding: EdgeInsets.zero,
-                  onPressed: () {},
+                  onPressed: () {
+                    setState(() {});
+                  },
                   child: Container(
                     height: MediaQuery.of(context).size.height * 0.07,
                     width: MediaQuery.of(context).size.width,

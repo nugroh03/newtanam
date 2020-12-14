@@ -142,7 +142,7 @@ class _OrderPageState extends State<OrderPage> {
     return Scaffold(
       backgroundColor: primary,
       body: Padding(
-        padding: const EdgeInsets.only(top: 10, bottom: 40, left: 5, right: 5),
+        padding: const EdgeInsets.only(top: 10, bottom: 50, left: 5, right: 5),
         child: GridView.count(
           childAspectRatio: 4 / 5,
           crossAxisCount: 2,

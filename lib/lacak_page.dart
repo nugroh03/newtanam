@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tanamio/color.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tanamio/detail_lacak.dart';
 
 class LacakPage extends StatefulWidget {
   LacakPage({Key key, this.title}) : super(key: key);
@@ -90,47 +91,56 @@ class _LacakPageState extends State<LacakPage> {
   Widget lacak(item) {
     return Padding(
       padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
-      child: Container(
-        padding: EdgeInsets.all(10),
-        height: 80,
-        decoration: BoxDecoration(
-          color: white,
-          border: Border(left: BorderSide(width: 5, color: green2)),
-          // borderRadius: BorderRadius.only(
-          //     topRight: Radius.circular(5), bottomRight: Radius.circular(5)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 2,
-              blurRadius: 3,
-              offset: Offset(0, 3), // changes position of shadow
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Flexible(
-              flex: 8,
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(item['codeorderan']),
-                    Text(item['tanggal_orderan'])
-                  ],
+      child: FlatButton(
+        padding: EdgeInsets.zero,
+        onPressed: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => DetailLacak()));
+        },
+        child: Container(
+          padding: EdgeInsets.all(10),
+          height: 80,
+          decoration: BoxDecoration(
+            color: white,
+            border: Border(left: BorderSide(width: 5, color: green2)),
+            // borderRadius: BorderRadius.only(
+            //     topRight: Radius.circular(5), bottomRight: Radius.circular(5)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 2,
+                blurRadius: 3,
+                offset: Offset(0, 3), // changes position of shadow
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Flexible(
+                flex: 8,
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(item['codeorderan']),
+                      Text(item['tanggal_orderan'])
+                    ],
+                  ),
                 ),
               ),
-            ),
-            Flexible(
-              flex: 1,
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                child: IconButton(icon: Icon(Icons.forward), onPressed: () {}),
-              ),
-            )
-          ],
+              Flexible(
+                flex: 1,
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: IconButton(
+                      icon: Icon(Icons.forward, color: green2),
+                      onPressed: () {}),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
