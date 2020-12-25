@@ -286,9 +286,12 @@ class _DetailLacakState extends State<DetailLacak> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Container(
-          padding: EdgeInsets.only(top: 10, left: 30),
+          padding: EdgeInsets.only(
+            top: 10,
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               IconButton(
                   icon: Icon(

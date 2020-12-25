@@ -2,42 +2,108 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tanamio/color.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:async';
+import 'config.dart';
+import 'dart:io';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OrderPage extends StatefulWidget {
-  OrderPage({Key key, this.title}) : super(key: key);
+  OrderPage({Key key, this.title, this.nextpage}) : super(key: key);
 
   final String title;
+  final Function nextpage;
 
   @override
-  _OrderPageState createState() => _OrderPageState();
+  _OrderPageState createState() => _OrderPageState(nextpage: nextpage);
 }
 
-class _OrderPageState extends State<OrderPage> {
+class _OrderPageState extends State<OrderPage>
+    with SingleTickerProviderStateMixin {
+  _OrderPageState({Key key, this.nextpage});
+
+  Function nextpage;
+
   int _counter = 0;
+
   int jmlorderpro = 0;
 
-  final List<String> _product = [
-    'assets/product/butternut.png',
-    'assets/product/kol.png',
-    'assets/product/melon.png',
-    'assets/product/sawi.png',
-    'assets/product/cabai.png',
-    'assets/product/kentang.png',
-    'assets/product/butternut.png',
-    'assets/product/kol.png',
-    'assets/product/melon.png',
-    'assets/product/sawi.png',
-    'assets/product/cabai.png',
-    'assets/product/kentang.png',
-  ];
+  List dataProduct = [];
 
+  Map keranjang = {};
+  List qty = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getProduct('');
+  }
   // void _incrementCounter() {
   //   setState(() {
 
   //   });
   // }
 
+  void getProduct(item) async {
+    print('akses api');
+
+    final data = {
+      'search': item.toString(),
+    };
+    var url = Uri.http(apiurlget, '/product', data);
+    // Await the http get response, then decode the json-formatted response.
+    var response =
+        await http.get(url, headers: {"Content-Type": "application/json"});
+    if (response.statusCode == 200) {
+      final jsonResponse = json.decode(response.body);
+      var responses = Responses(jsonResponse);
+
+      if (responses.success == "true") {
+        print('product: ' + json.encode(responses.data));
+
+        setState(() {
+          dataProduct = json.decode(responses.data);
+        });
+      } else {
+        _alert('Gagal', 'Silahkan Coba Lagi!');
+      }
+    } else {
+      //print('Request failed with status: ${response.statusCode}.');
+      _alert('Gagal', 'Silahkan Coba Lagi');
+    }
+  }
+
+  Future<void> _alert(title, message) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(message),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Widget gridkategori(item) {
+    var index = dataProduct.indexOf(item);
+
     return Container(
       padding: EdgeInsets.all(5),
       child: Column(
@@ -65,15 +131,15 @@ class _OrderPageState extends State<OrderPage> {
                     color: white,
                     height: 80,
                     width: 100,
-                    child: Image.asset(
-                      item,
+                    child: Image.network(
+                      item['image'],
                       fit: BoxFit.cover,
                     )),
                 SizedBox(
                   height: 10,
                 ),
-                Text('Nama Product'),
-                Text('Rp. 5000, /Kg'),
+                Text(item['name_product']),
+                Text('Rp.' + item['price_product'].toString() + '/Kg'),
               ],
             ),
           ),
@@ -106,7 +172,22 @@ class _OrderPageState extends State<OrderPage> {
                           FontAwesomeIcons.minus,
                           size: 12,
                         ),
-                        onPressed: () {}),
+                        onPressed: () {
+                          if (dataProduct[index] != null) {
+                            var qty = dataProduct[index]['qty'];
+                            if (qty >= 1) {
+                              qty--;
+
+                              dataProduct[index]['qty'] = qty;
+
+                              setState(() {
+                                dataProduct[index] = dataProduct[index];
+                                keranjang = keranjang;
+                              });
+                              print(keranjang.toString());
+                            }
+                          }
+                        }),
                   ),
                 ),
                 Flexible(
@@ -114,21 +195,40 @@ class _OrderPageState extends State<OrderPage> {
                   child: Container(
                     alignment: Alignment.center,
                     width: MediaQuery.of(context).size.width,
-                    child: Text(jmlorderpro.toString(),
+                    child: Text(dataProduct[index]['qty'].toString(),
+                        /*qty[index]*/
                         style: GoogleFonts.poppins(
                           fontSize: 15,
                         )),
                   ),
                 ),
                 Flexible(
-                  flex: 2,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    child: IconButton(
-                        icon: FaIcon(FontAwesomeIcons.plus, size: 12),
-                        onPressed: () {}),
-                  ),
-                )
+                    flex: 2,
+                    child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: IconButton(
+                            icon: FaIcon(FontAwesomeIcons.plus, size: 12),
+                            onPressed: () {
+                              if (dataProduct[index] != null) {
+                                var qty = dataProduct[index]['qty'];
+                                var id = dataProduct[index]['product_id'];
+                                var data = dataProduct[index];
+                                qty++;
+                                if (keranjang[id] != null) {
+                                  keranjang[id]['qty'] = qty;
+                                } else {
+                                  keranjang[id] = data;
+                                }
+
+                                dataProduct[index]['qty'] = qty;
+
+                                setState(() {
+                                  dataProduct[index] = dataProduct[index];
+                                  keranjang = keranjang;
+                                });
+                                print(keranjang.toString());
+                              }
+                            }))),
               ],
             ),
           )
@@ -147,13 +247,22 @@ class _OrderPageState extends State<OrderPage> {
           childAspectRatio: 4 / 5,
           crossAxisCount: 2,
           crossAxisSpacing: 5,
-          children: _product.map<Widget>((item) => gridkategori(item)).toList(),
+          children:
+              dataProduct.map<Widget>((item) => gridkategori(item)).toList(),
         ),
       ),
       bottomSheet: BottomAppBar(
         child: FlatButton(
             padding: EdgeInsets.zero,
-            onPressed: () {},
+            onPressed: () async {
+              final SharedPreferences prefs1 =
+                  await SharedPreferences.getInstance();
+              prefs1.setString('keranjang', json.encode(keranjang));
+
+              print(keranjang);
+
+              //nextpage();
+            },
             child: Container(
               height: MediaQuery.of(context).size.height * 0.07,
               alignment: Alignment.center,
@@ -168,5 +277,16 @@ class _OrderPageState extends State<OrderPage> {
             )),
       ),
     );
+  }
+}
+
+class Responses {
+  String success;
+  String message;
+  String data;
+  Responses(Map<String, dynamic> item) {
+    success = item['success'];
+    message = item['message'];
+    data = item['data'];
   }
 }

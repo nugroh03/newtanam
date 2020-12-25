@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tanamio/color.dart';
 import 'package:tanamio/edit_produk_orderan.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class KeranjangPage extends StatefulWidget {
   KeranjangPage({Key key, this.title}) : super(key: key);
@@ -44,8 +47,29 @@ class _KeranjangPageState extends State<KeranjangPage> {
     },
   ];
 
+  List dataorderan2 = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    getdatakeranjang();
+  }
+
   void _incrementCounter() {
     setState(() {});
+  }
+
+  void getdatakeranjang() async {
+    final SharedPreferences prefs1 = await SharedPreferences.getInstance();
+    var data = prefs1.getString('keranjang');
+    Map datakeranjang = jsonDecode(data);
+    List dataorderan1 = [];
+    datakeranjang.forEach((k, v) => dataorderan1.add({k: v}));
+    setState(() {
+      dataorderan2 = dataorderan1;
+    });
+    print(jsonEncode(dataorderan2));
   }
 
   Widget keranjangkosong() {

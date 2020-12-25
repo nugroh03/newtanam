@@ -1,2 +1,2 @@
-var apiurl = 'http://134.122.123.131:9000/';
-var phpurl = 'http://134.122.123.131/hanaang/php/';
+var apiurl = 'http://10.0.2.2:5000/';
+var apiurlget = '10.0.2.2:5000';

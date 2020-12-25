@@ -7,25 +7,45 @@ import 'package:tanamio/keranjang_page.dart';
 import 'package:tanamio/lacak_page.dart';
 import 'package:tanamio/order_page.dart';
 import 'package:tanamio/tagihan_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key key, this.title}) : super(key: key);
+  HomePage({Key key, this.title, this.keranjang}) : super(key: key);
 
   final String title;
+  final Map keranjang;
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _HomePageState createState() => _HomePageState(keranjang: keranjang);
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
+  _HomePageState({Key key, this.keranjang});
+
+  Map keranjang = {};
+
   int _counter = 0;
   bool _blockvisible = false;
   bool _notifterkirim = false;
+  int _tabIndex = 0;
+  TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(vsync: this, length: 4);
+  }
 
   void _incrementCounter() {
     setState(() {
       _counter++;
     });
+  }
+
+  void _toggleTab() {
+    _tabIndex = _tabController.index + 1;
+    _tabController.animateTo(_tabIndex);
   }
 
   Widget _block() {
@@ -77,6 +97,7 @@ class _HomePageState extends State<HomePage> {
               labelPadding: EdgeInsets.zero,
               indicatorSize: TabBarIndicatorSize.label,
               indicatorColor: white,
+              controller: _tabController,
               tabs: [
                 Container(
                   alignment: Alignment.topCenter,
@@ -126,8 +147,19 @@ class _HomePageState extends State<HomePage> {
         ),
         body: TabBarView(
           physics: NeverScrollableScrollPhysics(),
+          controller: _tabController,
           children: [
-            OrderPage(),
+            OrderPage(
+              nextpage: () async {
+                // final SharedPreferences prefs1 =
+                //     await SharedPreferences.getInstance();
+                // prefs1.setString('toko', keranjang);
+
+                setState(() {
+                  _toggleTab();
+                });
+              },
+            ),
             KeranjangPage(),
             LacakPage(),
             TagihanPage(),

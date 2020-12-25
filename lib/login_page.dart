@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'color.dart';
 import 'package:http/http.dart' as http;
-import 'hexColor.dart';
 import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
-import "package:intl/intl.dart";
 import 'dart:async';
+import 'config.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'config.dart';
 import 'home_page.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
@@ -19,14 +18,56 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final fieldemail = new TextEditingController();
-  final fieldpassword = new TextEditingController();
+  final fieldphone = new TextEditingController();
+  final fieldpin = new TextEditingController();
   @override
   void initState() {
     super.initState();
+    fieldphone.text = '';
+    fieldpin.text = '';
+    checkUser();
+  }
 
-    fieldemail.text = '';
-    fieldpassword.text = '';
+  void checkUser() async {
+    final SharedPreferences prefs7 = await SharedPreferences.getInstance();
+    var user = prefs7.getString('user');
+
+    if (user != null && user != '') {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => HomePage()));
+    }
+  }
+
+  void login() async {
+    Map data = {'phone': fieldphone.text, 'pin': fieldpin.text};
+    //encode Map to JSON
+    var body = json.encode(data);
+    var url = apiurl + 'login';
+
+    // Await the http get response, then decode the json-formatted response.
+    var response = await http.post(url,
+        headers: {"Content-Type": "application/json"}, body: body);
+    if (response.statusCode == 200) {
+      final jsonResponse = json.decode(response.body);
+      var responses = Responses(jsonResponse);
+
+      if (responses.success == "true") {
+        print('user: ' + json.encode(responses.data));
+
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('user', responses.data);
+
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => HomePage()));
+      } else {
+        EasyLoading.dismiss();
+        _alert('Info', 'Login gagal!');
+      }
+    } else {
+      EasyLoading.dismiss();
+      //print('Request failed with status: ${response.statusCode}.');
+      _alert('Info', 'Login gagal!');
+    }
   }
 
   Future<void> _alert(title, message) async {
@@ -68,7 +109,7 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     final email = TextFormField(
-      controller: fieldemail,
+      controller: fieldphone,
       keyboardType: TextInputType.emailAddress,
       autofocus: false,
       decoration: InputDecoration(
@@ -85,7 +126,7 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     final password = TextFormField(
-      controller: fieldpassword,
+      controller: fieldpin,
       autofocus: false,
       obscureText: true,
       decoration: InputDecoration(
@@ -104,8 +145,7 @@ class _LoginPageState extends State<LoginPage> {
     final loginButton = FlatButton(
         padding: EdgeInsets.zero,
         onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => HomePage()));
+          login();
         },
         child: Container(
           height: MediaQuery.of(context).size.height * 0.06,
